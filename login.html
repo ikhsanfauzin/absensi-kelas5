@@ -62,32 +62,37 @@
     <div class="error" id="errorMsg"></div>
   </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
-      authDomain: "absensi-sdn-fff32.firebaseapp.com",
-      projectId: "absensi-sdn-fff32",
-      storageBucket: "absensi-sdn-fff32.appspot.com",
-      messagingSenderId: "133354487975",
-      appId: "1:133354487975:web:07c4c6b8113dffe8585b82"
-    };
+<script type="module">
+  // Import modular SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
+    authDomain: "absensi-sdn-fff32.firebaseapp.com",
+    projectId: "absensi-sdn-fff32",
+    storageBucket: "absensi-sdn-fff32.appspot.com",
+    messagingSenderId: "133354487975",
+    appId: "1:133354487975:web:07c4c6b8113dffe8585b82"
+  };
 
-    function loginGuru() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          localStorage.setItem("isLoggedIn", "true");
-          window.location.href = "index.html";
-        })
-        .catch((error) => {
-          document.getElementById("errorMsg").textContent = "Login gagal: " + error.message;
-        });
-    }
-  </script>
+  window.loginGuru = () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        localStorage.setItem("isLoggedIn", "true");
+        window.location.href = "index.html";
+      })
+      .catch((error) => {
+        document.getElementById("errorMsg").textContent = "Login gagal: " + error.message;
+      });
+  };
+</script>
+
 </body>
 </html>
