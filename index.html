@@ -182,13 +182,12 @@
 
     <p id="notifikasi"></p>
   </div>
-<script>
+  <script src="script.js"></script>
+  <script>
   if (localStorage.getItem("isLoggedIn") !== "true") {
     window.location.href = "login.html";
   }
 </script>
-
-  <script src="script.js"></script>
   <script>
     function updateTanggal() {
       const now = new Date();
