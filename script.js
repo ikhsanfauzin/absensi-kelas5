@@ -1,5 +1,18 @@
-// Firebase integration
-const database = firebase.database();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
+  authDomain: "absensi-sdn-fff32.firebaseapp.com",
+  databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "absensi-sdn-fff32",
+  storageBucket: "absensi-sdn-fff32.appspot.com",
+  messagingSenderId: "133354487975",
+  appId: "1:133354487975:web:07c4c6b8113dffe8585b82"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 const daftarSiswa = [
   { nama: "Adelia Natasya", nisn: "0147482853" },
@@ -65,7 +78,7 @@ function renderCards() {
   });
 }
 
-function toggleStatus(nisn, status, btn) {
+window.toggleStatus = function(nisn, status, btn) {
   const hidden = document.querySelector(`input[name='status-${nisn}']`);
   if (!hidden) return;
 
@@ -83,14 +96,14 @@ function toggleStatus(nisn, status, btn) {
     btn.style.backgroundColor = "#4caf50";
     btn.style.color = "white";
   }
-}
+};
 
-function tandaiSemuaHadir() {
+window.tandaiSemuaHadir = function() {
   daftarSiswa.forEach(siswa => {
     const btn = document.querySelector(`button[onclick*="toggleStatus('${siswa.nisn}', 'Hadir'"]`);
     if (btn) btn.click();
   });
-}
+};
 
 function showPopup(message, success = true) {
   const popup = document.createElement("div");
@@ -108,7 +121,7 @@ function showPopup(message, success = true) {
   setTimeout(() => document.body.removeChild(popup), 5000);
 }
 
-function kirimAbsen() {
+window.kirimAbsen = function() {
   const tanggal = document.getElementById("tanggal").value;
   if (!tanggal) {
     showPopup("Silakan pilih tanggal terlebih dahulu.", false);
@@ -131,7 +144,12 @@ function kirimAbsen() {
   daftarSiswa.forEach(siswa => {
     const statusInput = document.querySelector(`input[name='status-${siswa.nisn}']`);
     const status = statusInput.value;
-    database.ref("absensi").push({ nama: siswa.nama, nisn: siswa.nisn, tanggal, status });
+    push(ref(database, "absensi"), {
+      nama: siswa.nama,
+      nisn: siswa.nisn,
+      tanggal,
+      status
+    });
   });
 
   showPopup("✅ Absen telah dikirim.");
