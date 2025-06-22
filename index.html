@@ -182,6 +182,11 @@
 
     <p id="notifikasi"></p>
   </div>
+<script>
+  if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
 
   <script src="script.js"></script>
   <script>
