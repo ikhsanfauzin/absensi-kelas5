@@ -1,3 +1,6 @@
+// Firebase integration
+const database = firebase.database();
+
 const daftarSiswa = [
   { nama: "Adelia Natasya", nisn: "0147482853" },
   { nama: "Adzkia Samha Saufa", nisn: "3153619924" },
@@ -112,7 +115,6 @@ function kirimAbsen() {
     return;
   }
 
-  let data = JSON.parse(localStorage.getItem("absensi")) || [];
   let siswaKosong = [];
 
   daftarSiswa.forEach(siswa => {
@@ -129,11 +131,9 @@ function kirimAbsen() {
   daftarSiswa.forEach(siswa => {
     const statusInput = document.querySelector(`input[name='status-${siswa.nisn}']`);
     const status = statusInput.value;
-    data = data.filter(d => !(d.nisn === siswa.nisn && d.tanggal === tanggal));
-    data.push({ nama: siswa.nama, nisn: siswa.nisn, tanggal, status });
+    database.ref("absensi").push({ nama: siswa.nama, nisn: siswa.nisn, tanggal, status });
   });
 
-  localStorage.setItem("absensi", JSON.stringify(data));
   showPopup("✅ Absen telah dikirim.");
 }
 
