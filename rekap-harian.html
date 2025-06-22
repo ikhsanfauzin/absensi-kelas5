@@ -131,6 +131,11 @@
       </table>
     </div>
   </main>
+<script>
+  if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
 
   <script>
     const siswa = JSON.parse(localStorage.getItem("absensi")) || [];
