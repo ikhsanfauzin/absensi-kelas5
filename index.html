@@ -125,6 +125,29 @@
       flex-wrap: wrap;
     }
   </style>
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js"></script>
+
+<script>
+  // Konfigurasi Firebase kamu
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
+    authDomain: "absensi-sdn-fff32.firebaseapp.com",
+    databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "absensi-sdn-fff32",
+    storageBucket: "absensi-sdn-fff32.firebasestorage.app",
+    messagingSenderId: "133354487975",
+    appId: "1:133354487975:web:07c4c6b8113dffe8585b82",
+    measurementId: "G-XC3PEBX3E4"
+  };
+
+  // Inisialisasi Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const analytics = firebase.analytics();
+</script>
 </head>
 <body>
 
@@ -182,29 +205,5 @@
       inputTgl.value = today;
     });
   </script>
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js"></script>
-
-<script>
-  // Konfigurasi Firebase kamu
-  const firebaseConfig = {
-    apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
-    authDomain: "absensi-sdn-fff32.firebaseapp.com",
-    databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "absensi-sdn-fff32",
-    storageBucket: "absensi-sdn-fff32.firebasestorage.app",
-    messagingSenderId: "133354487975",
-    appId: "1:133354487975:web:07c4c6b8113dffe8585b82",
-    measurementId: "G-XC3PEBX3E4"
-  };
-
-  // Inisialisasi Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const analytics = firebase.analytics();
-</script>
-
 </body>
 </html>
