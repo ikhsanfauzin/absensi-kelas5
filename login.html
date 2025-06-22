@@ -8,59 +8,74 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f1f1f1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .login-container {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 100%;
-      max-width: 350px;
-    }
-    h2 {
-      text-align: center;
-      color: #1976d2;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #1976d2;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .error {
-      color: red;
-      margin-top: 10px;
-      text-align: center;
-    }
+  font-family: 'Segoe UI', sans-serif;
+  background: #e3f2fd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-container {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #1976d2;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  outline-color: #1976d2;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 15px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #125ea7;
+}
+
+.error {
+  color: #f44336;
+  text-align: center;
+  margin-top: 10px;
+}
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login Guru</h2>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="loginGuru()">Masuk</button>
-    <div class="error" id="errorMsg"></div>
-  </div>
+<div class="login-container">
+  <h2>Login Guru</h2>
+  <input type="email" id="email" placeholder="Email Guru" required>
+  <input type="password" id="password" placeholder="Kata Sandi" required>
+  <button onclick="loginGuru()">Masuk</button>
+  <div class="error" id="errorMsg"></div>
+</div>
 
 <script type="module">
   // Import modular SDK
