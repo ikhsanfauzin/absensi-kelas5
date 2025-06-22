@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rekap Harian - SDN Sukamulya</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f6f8;
+    }
+
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    header .subtitle {
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .toolbar .left-buttons button,
+    .toolbar .right-buttons button {
+      padding: 8px 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-kembali { background: #616161; color: white; }
+    .btn-rekap { background: #f9a825; color: black; }
+    .btn-cetak { background: #0288d1; color: white; }
+
+    .toolbar input[type="date"] {
+      padding: 6px 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    @media print {
+      .toolbar, header {
+        display: none;
+      }
+
+      main {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="title">SD NEGERI SUKAMULYA</div>
+      <div class="subtitle">Rekap Absensi Harian - Kelas 5</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="left-buttons">
+        <button class="btn-rekap" onclick="window.location.href='rekap-bulanan.html'">Rekap Bulanan</button>
+        <button class="btn-kembali" onclick="window.location.href='index.html'">Kembali</button>
+        <button class="btn-cetak" onclick="window.print()">Cetak</button>
+      </div>
+      <div class="right-buttons">
+        <label for="tanggalHarian">Tanggal:</label>
+        <input type="date" id="tanggalHarian" onchange="tampilkanHarian()">
+        <button onclick="resetTanggal()">Tampilkan Semua</button>
+      </div>
+    </div>
+
+    <div id="rekapHarian">
+      <table id="tabelHarian">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Nama</th>
+            <th>NISN</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Diisi oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const siswa = JSON.parse(localStorage.getItem("absensi")) || [];
+
+    function tampilkanHarian() {
+      const tbody = document.querySelector("#tabelHarian tbody");
+      tbody.innerHTML = "";
+
+      const filterTanggal = document.getElementById("tanggalHarian").value;
+      const dataFilter = siswa.filter(s => {
+        return filterTanggal ? s.tanggal === filterTanggal : true;
+      });
+
+      const sorted = dataFilter.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+      for (let data of sorted) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.tanggal}</td>
+          <td>${data.nama}</td>
+          <td>${data.nisn}</td>
+          <td>${data.status}</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+
+    function resetTanggal() {
+      document.getElementById("tanggalHarian").value = "";
+      tampilkanHarian();
+    }
+
+    window.onload = tampilkanHarian;
+  </script>
+</body>
+</html>

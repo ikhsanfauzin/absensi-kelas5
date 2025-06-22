@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>SD NEGERI SUKAMULYA - Absensi Kelas 5</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .header-sub {
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .absen-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .absen-toolbar input[type="date"] {
+      padding: 5px 10px;
+    }
+
+    .absen-toolbar button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-hadir {
+      background-color: #2e7d32;
+      color: white;
+    }
+
+    .btn-kirim {
+      background-color: #6a1b9a;
+      color: white;
+    }
+
+    .btn-rekap {
+      background-color: #fbc02d;
+      color: black;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card h4 {
+      margin: 0 0 5px;
+    }
+
+    .status-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .status-buttons button {
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid;
+      cursor: pointer;
+    }
+
+    .hadir { border-color: #388e3c; color: #388e3c; }
+    .sakit { border-color: #fbc02d; color: #fbc02d; }
+    .izin { border-color: #1e88e5; color: #1e88e5; }
+    .alpa { border-color: #e53935; color: #e53935; }
+
+    #notifikasi {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>
+      <div class="header-title">SD NEGERI SUKAMULYA</div>
+      <div class="header-sub">Absensi Kelas 5</div>
+    </div>
+    <div>
+      <div id="tanggalNow"></div>
+      <div id="jamNow"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="absen-toolbar">
+      <div>
+        <label for="tanggal">Tanggal:</label>
+        <input type="date" id="tanggal">
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-hadir" onclick="tandaiSemuaHadir()">Hadir Semua</button>
+        <button class="btn-kirim" onclick="kirimAbsen()">Kirim Absen</button>
+        <button class="btn-rekap" onclick="window.location.href='rekap-harian.html'">Rekap Harian</button>
+        <button class="btn-rekap" onclick="window.location.href='rekap-bulanan.html'">Rekap Bulanan</button>
+      </div>
+    </div>
+
+    <div class="grid-container" id="tableBody">
+      <!-- Kartu siswa akan diisi oleh script.js -->
+    </div>
+
+    <p id="notifikasi"></p>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    function updateTanggal() {
+      const now = new Date();
+      const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
+      const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById("tanggalNow").innerText = `${hari}, ${tgl}`;
+      document.getElementById("jamNow").innerText = jam;
+    }
+
+    setInterval(updateTanggal, 1000);
+    updateTanggal();
+
+    // Set tanggal input default
+    document.addEventListener("DOMContentLoaded", () => {
+      const inputTgl = document.getElementById("tanggal");
+      const today = new Date().toISOString().split("T")[0];
+      inputTgl.value = today;
+    });
+  </script>
+</body>
+</html>

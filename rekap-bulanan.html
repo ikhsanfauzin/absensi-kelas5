@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rekap Bulanan - SDN Sukamulya</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f6f8;
+    }
+
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    header .subtitle {
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .toolbar .left-buttons button,
+    .toolbar .right-buttons button {
+      padding: 8px 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-kembali { background: #616161; color: white; }
+    .btn-rekap { background: #f9a825; color: black; }
+    .btn-cetak { background: #0288d1; color: white; }
+
+    select {
+      padding: 6px 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .minggu {
+      background-color: #ffe5e5;
+    }
+
+    @media print {
+      .toolbar, header {
+        display: none;
+      }
+      main {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
+      table {
+        font-size: 8pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="title">SD NEGERI SUKAMULYA</div>
+      <div class="subtitle">Rekap Absensi Bulanan - Kelas 5</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="left-buttons">
+        <button class="btn-rekap" onclick="window.location.href='rekap-harian.html'">Rekap Harian</button>
+        <button class="btn-kembali" onclick="window.location.href='index.html'">Kembali</button>
+        <button class="btn-cetak" onclick="window.print()">Cetak</button>
+      </div>
+      <div class="right-buttons">
+        <label for="bulan">Bulan:</label>
+        <select id="bulan" onchange="tampilkanBulanan()"></select>
+        <label for="tahun">Tahun:</label>
+        <select id="tahun" onchange="tampilkanBulanan()"></select>
+      </div>
+    </div>
+
+    <div id="rekapBulanan">
+      <table id="tabelBulanan">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const siswa = JSON.parse(localStorage.getItem("absensi")) || [];
+
+    function initFilter() {
+      const bulanSelect = document.getElementById("bulan");
+      const tahunSelect = document.getElementById("tahun");
+      const bulanMap = ["01","02","03","04","05","06","07","08","09","10","11","12"];
+      bulanSelect.innerHTML = "";
+
+      bulanMap.forEach((b, i) => {
+        const option = document.createElement("option");
+        option.value = b;
+        option.textContent = new Date(0, i).toLocaleString('id-ID', { month: 'long' });
+        bulanSelect.appendChild(option);
+      });
+
+      const tahunSet = new Set(siswa.map(s => {
+        const tgl = new Date(s.tanggal);
+        return !isNaN(tgl) ? tgl.getFullYear() : null;
+      }).filter(Boolean));
+
+      let tahunList = Array.from(tahunSet).sort();
+      if (tahunList.length === 0) tahunList = [new Date().getFullYear()];
+      tahunSelect.innerHTML = "";
+
+      tahunList.forEach(t => {
+        const option = document.createElement("option");
+        option.value = t;
+        option.textContent = t;
+        tahunSelect.appendChild(option);
+      });
+
+      const today = new Date();
+      bulanSelect.value = String(today.getMonth() + 1).padStart(2, "0");
+      tahunSelect.value = today.getFullYear();
+    }
+
+    function tampilkanBulanan() {
+      const tbody = document.querySelector("#tabelBulanan tbody");
+      const thead = document.querySelector("#tabelBulanan thead");
+      tbody.innerHTML = "";
+
+      const bulan = parseInt(document.getElementById("bulan").value);
+      const tahun = parseInt(document.getElementById("tahun").value);
+      const jumlahHari = new Date(tahun, bulan, 0).getDate();
+
+      let headerRow = `<tr>
+        <th>No</th>
+        <th>Nama</th>
+        <th>NISN</th>`;
+
+      for (let tgl = 1; tgl <= jumlahHari; tgl++) {
+        const date = new Date(tahun, bulan - 1, tgl);
+        const isMinggu = date.getDay() === 0;
+        headerRow += `<th class="${isMinggu ? 'minggu' : ''}">${tgl}</th>`;
+      }
+
+      headerRow += `<th>H</th><th>S</th><th>I</th><th>A</th></tr>`;
+      thead.innerHTML = headerRow;
+
+      const dataFilter = siswa.filter(s => {
+        const tgl = new Date(s.tanggal);
+        return (tgl.getMonth() + 1 === bulan) && (tgl.getFullYear() === tahun);
+      });
+
+      const siswaUnik = {};
+      dataFilter.forEach(d => {
+        const tgl = new Date(d.tanggal).getDate();
+        if (!siswaUnik[d.nisn]) {
+          siswaUnik[d.nisn] = {
+            nama: d.nama,
+            nisn: d.nisn,
+            absen: {},
+            count: { H: 0, S: 0, I: 0, A: 0 }
+          };
+        }
+        siswaUnik[d.nisn].absen[tgl] = d.status;
+
+        if (d.status === "Hadir") siswaUnik[d.nisn].count.H++;
+        else if (d.status === "Sakit") siswaUnik[d.nisn].count.S++;
+        else if (d.status === "Izin") siswaUnik[d.nisn].count.I++;
+        else if (d.status === "Alpa") siswaUnik[d.nisn].count.A++;
+      });
+
+      const siswaArray = Object.values(siswaUnik).sort((a, b) => a.nama.localeCompare(b.nama));
+
+      let i = 1;
+      for (let s of siswaArray) {
+        let row = `<tr><td>${i++}</td><td>${s.nama}</td><td>${s.nisn}</td>`;
+
+        for (let tgl = 1; tgl <= jumlahHari; tgl++) {
+          const status = s.absen[tgl] || "";
+          const day = new Date(tahun, bulan - 1, tgl).getDay();
+          const kelasMinggu = day === 0 ? 'minggu' : '';
+          row += `<td class="${kelasMinggu}">${status}</td>`;
+        }
+
+        row += `<td>${s.count.H}</td><td>${s.count.S}</td><td>${s.count.I}</td><td>${s.count.A}</td></tr>`;
+        tbody.innerHTML += row;
+      }
+    }
+
+    window.onload = () => {
+      initFilter();
+      tampilkanBulanan();
+    };
+  </script>
+</body>
+</html>
