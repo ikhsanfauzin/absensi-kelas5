@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SD NEGERI SUKAMULYA - Absensi Kelas 5</title>
   <style>
     body {
@@ -110,8 +110,8 @@
 
     .hadir { border-color: #388e3c; color: #388e3c; }
     .sakit { border-color: #fbc02d; color: #fbc02d; }
-    .izin { border-color: #1e88e5; color: #1e88e5; }
-    .alpa { border-color: #e53935; color: #e53935; }
+    .izin  { border-color: #1e88e5; color: #1e88e5; }
+    .alpa  { border-color: #e53935; color: #e53935; }
 
     #notifikasi {
       margin-top: 15px;
@@ -125,29 +125,6 @@
       flex-wrap: wrap;
     }
   </style>
-    <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js"></script>
-
-<script>
-  // Konfigurasi Firebase kamu
-  const firebaseConfig = {
-    apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
-    authDomain: "absensi-sdn-fff32.firebaseapp.com",
-    databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "absensi-sdn-fff32",
-    storageBucket: "absensi-sdn-fff32.firebasestorage.app",
-    messagingSenderId: "133354487975",
-    appId: "1:133354487975:web:07c4c6b8113dffe8585b82",
-    measurementId: "G-XC3PEBX3E4"
-  };
-
-  // Inisialisasi Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const analytics = firebase.analytics();
-</script>
 </head>
 <body>
 
@@ -182,18 +159,24 @@
 
     <p id="notifikasi"></p>
   </div>
-<script type="module" src="script.js"></script>
+
+  <!-- ✅ Script Firebase Modular -->
+  <script type="module" src="script.js"></script>
+
+  <!-- Cek login -->
   <script>
-  if (localStorage.getItem("isLoggedIn") !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <!-- Jam dan tanggal -->
   <script>
     function updateTanggal() {
       const now = new Date();
       const hari = now.toLocaleDateString('id-ID', { weekday: 'long' });
-      const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-      const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const tgl  = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      const jam  = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
       document.getElementById("tanggalNow").innerText = `${hari}, ${tgl}`;
       document.getElementById("jamNow").innerText = jam;
@@ -202,12 +185,13 @@
     setInterval(updateTanggal, 1000);
     updateTanggal();
 
-    // Set tanggal input default
+    // Set tanggal default
     document.addEventListener("DOMContentLoaded", () => {
       const inputTgl = document.getElementById("tanggal");
       const today = new Date().toISOString().split("T")[0];
       inputTgl.value = today;
     });
   </script>
+
 </body>
 </html>
