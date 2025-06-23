@@ -125,47 +125,58 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Diisi oleh JavaScript -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
   </main>
-<script>
-  if (localStorage.getItem("isLoggedIn") !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
 
-  <script>
-    const siswa = JSON.parse(localStorage.getItem("absensi")) || [];
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-    function tampilkanHarian() {
-      const tbody = document.querySelector("#tabelHarian tbody");
-      tbody.innerHTML = "";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
+      authDomain: "absensi-sdn-fff32.firebaseapp.com",
+      databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "absensi-sdn-fff32",
+      storageBucket: "absensi-sdn-fff32.appspot.com",
+      messagingSenderId: "133354487975",
+      appId: "1:133354487975:web:07c4c6b8113dffe8585b82"
+    };
 
-      const filterTanggal = document.getElementById("tanggalHarian").value;
-      const dataFilter = siswa.filter(s => {
-        return filterTanggal ? s.tanggal === filterTanggal : true;
-      });
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-      const sorted = dataFilter.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
-
-      for (let data of sorted) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data.tanggal}</td>
-          <td>${data.nama}</td>
-          <td>${data.nisn}</td>
-          <td>${data.status}</td>
-        `;
-        tbody.appendChild(row);
-      }
-    }
+    const tanggalInput = document.getElementById("tanggalHarian");
+    const tbody = document.querySelector("#tabelHarian tbody");
 
     function resetTanggal() {
-      document.getElementById("tanggalHarian").value = "";
+      tanggalInput.value = "";
       tampilkanHarian();
+    }
+
+    function tampilkanHarian() {
+      const filterTanggal = tanggalInput.value;
+      onValue(ref(db, "absensi"), (snapshot) => {
+        const data = Object.values(snapshot.val() || {});
+        const dataFilter = data.filter(s => {
+          return filterTanggal ? s.tanggal === filterTanggal : true;
+        });
+
+        const sorted = dataFilter.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+        tbody.innerHTML = "";
+        sorted.forEach(data => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.tanggal}</td>
+            <td>${data.nama}</td>
+            <td>${data.nisn}</td>
+            <td>${data.status}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
     }
 
     window.onload = tampilkanHarian;
