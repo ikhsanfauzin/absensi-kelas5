@@ -136,14 +136,30 @@
       </table>
     </div>
   </main>
-<script>
-  if (localStorage.getItem("isLoggedIn") !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
 
-  <script>
-    const siswa = JSON.parse(localStorage.getItem("absensi")) || [];
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
+      authDomain: "absensi-sdn-fff32.firebaseapp.com",
+      databaseURL: "https://absensi-sdn-fff32-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "absensi-sdn-fff32",
+      storageBucket: "absensi-sdn-fff32.appspot.com",
+      messagingSenderId: "133354487975",
+      appId: "1:133354487975:web:07c4c6b8113dffe8585b82"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let siswaGlobal = [];
+
+    onValue(ref(db, "absensi"), (snapshot) => {
+      const data = Object.values(snapshot.val() || {});
+      siswaGlobal = data;
+      initFilter();
+    });
 
     function initFilter() {
       const bulanSelect = document.getElementById("bulan");
@@ -158,15 +174,11 @@
         bulanSelect.appendChild(option);
       });
 
-      const tahunSet = new Set(siswa.map(s => {
-        const tgl = new Date(s.tanggal);
-        return !isNaN(tgl) ? tgl.getFullYear() : null;
-      }).filter(Boolean));
-
+      const tahunSet = new Set(siswaGlobal.map(s => new Date(s.tanggal).getFullYear()));
       let tahunList = Array.from(tahunSet).sort();
       if (tahunList.length === 0) tahunList = [new Date().getFullYear()];
-      tahunSelect.innerHTML = "";
 
+      tahunSelect.innerHTML = "";
       tahunList.forEach(t => {
         const option = document.createElement("option");
         option.value = t;
@@ -177,9 +189,11 @@
       const today = new Date();
       bulanSelect.value = String(today.getMonth() + 1).padStart(2, "0");
       tahunSelect.value = today.getFullYear();
+
+      tampilkanBulanan();
     }
 
-    function tampilkanBulanan() {
+    window.tampilkanBulanan = () => {
       const tbody = document.querySelector("#tabelBulanan tbody");
       const thead = document.querySelector("#tabelBulanan thead");
       tbody.innerHTML = "";
@@ -188,21 +202,16 @@
       const tahun = parseInt(document.getElementById("tahun").value);
       const jumlahHari = new Date(tahun, bulan, 0).getDate();
 
-      let headerRow = `<tr>
-        <th>No</th>
-        <th>Nama</th>
-        <th>NISN</th>`;
-
+      let headerRow = `<tr><th>No</th><th>Nama</th><th>NISN</th>`;
       for (let tgl = 1; tgl <= jumlahHari; tgl++) {
         const date = new Date(tahun, bulan - 1, tgl);
         const isMinggu = date.getDay() === 0;
         headerRow += `<th class="${isMinggu ? 'minggu' : ''}">${tgl}</th>`;
       }
-
       headerRow += `<th>H</th><th>S</th><th>I</th><th>A</th></tr>`;
       thead.innerHTML = headerRow;
 
-      const dataFilter = siswa.filter(s => {
+      const dataFilter = siswaGlobal.filter(s => {
         const tgl = new Date(s.tanggal);
         return (tgl.getMonth() + 1 === bulan) && (tgl.getFullYear() === tahun);
       });
@@ -218,6 +227,7 @@
             count: { H: 0, S: 0, I: 0, A: 0 }
           };
         }
+
         siswaUnik[d.nisn].absen[tgl] = d.status;
 
         if (d.status === "Hadir") siswaUnik[d.nisn].count.H++;
@@ -231,23 +241,16 @@
       let i = 1;
       for (let s of siswaArray) {
         let row = `<tr><td>${i++}</td><td>${s.nama}</td><td>${s.nisn}</td>`;
-
         for (let tgl = 1; tgl <= jumlahHari; tgl++) {
           const status = s.absen[tgl] || "";
           const day = new Date(tahun, bulan - 1, tgl).getDay();
           const kelasMinggu = day === 0 ? 'minggu' : '';
           row += `<td class="${kelasMinggu}">${status}</td>`;
         }
-
         row += `<td>${s.count.H}</td><td>${s.count.S}</td><td>${s.count.I}</td><td>${s.count.A}</td></tr>`;
         tbody.innerHTML += row;
       }
     }
-
-    window.onload = () => {
-      initFilter();
-      tampilkanBulanan();
-    };
   </script>
 </body>
 </html>
