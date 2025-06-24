@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBHGaVizAiZ5s-s7g1uTJUme_nfz15r-BQ",
@@ -59,7 +59,6 @@ const daftarSiswa = [
 function renderCards() {
   const container = document.getElementById("tableBody");
   container.innerHTML = "";
-
   daftarSiswa.forEach((siswa, index) => {
     const card = document.createElement("div");
     card.className = "card";
@@ -81,7 +80,6 @@ function renderCards() {
 window.toggleStatus = function(nisn, status, btn) {
   const hidden = document.querySelector(`input[name='status-${nisn}']`);
   if (!hidden) return;
-
   if (hidden.value === status) {
     hidden.value = "";
     btn.style.backgroundColor = "#eee";
@@ -129,7 +127,6 @@ window.kirimAbsen = function() {
   }
 
   let siswaKosong = [];
-
   daftarSiswa.forEach(siswa => {
     const statusInput = document.querySelector(`input[name='status-${siswa.nisn}']`);
     const status = statusInput ? statusInput.value : "";
@@ -144,7 +141,7 @@ window.kirimAbsen = function() {
   daftarSiswa.forEach(siswa => {
     const statusInput = document.querySelector(`input[name='status-${siswa.nisn}']`);
     const status = statusInput.value;
-    push(ref(database, "absensi"), {
+    set(ref(database, `absensi/${tanggal}/${siswa.nisn}`), {
       nama: siswa.nama,
       nisn: siswa.nisn,
       tanggal,
@@ -153,7 +150,7 @@ window.kirimAbsen = function() {
   });
 
   showPopup("✅ Absen telah dikirim.");
-}
+};
 
 window.onload = () => {
   renderCards();
